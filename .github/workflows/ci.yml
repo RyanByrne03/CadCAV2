@@ -19,6 +19,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Fix Shebang for Ruby Scripts
+        run: sed -i 's/ruby.exe/ruby/g' bin/*
+
       - name: Fix Permissions
         run: chmod +x bin/*
 
@@ -38,6 +41,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Fix Shebang for Ruby Scripts
+        run: sed -i 's/ruby.exe/ruby/g' bin/*
+
       - name: Fix Permissions
         run: chmod +x bin/*
 
@@ -46,6 +52,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,6 +62,9 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Fix Shebang for Ruby Scripts
+        run: sed -i 's/ruby.exe/ruby/g' bin/*
 
       - name: Fix Permissions
         run: chmod +x bin/*
@@ -77,6 +87,9 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Fix Shebang for Ruby Scripts
+        run: sed -i 's/ruby.exe/ruby/g' bin/*
 
       - name: Fix Permissions
         run: chmod +x bin/*
