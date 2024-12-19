@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up SSH Key
         env:
@@ -22,47 +22,73 @@ jobs:
 
       - name: Test SSH Connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} "echo Connected Successfully!"
+          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.EC2_ELASTIC_IP }} "echo Connected Successfully!"
 
       - name: Deploy to EC2
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_M_KEY }}
         run: |
+          # First, write the master key to a local file
+          echo -n "$RAILS_MASTER_KEY" > master.key
+          
+          # Copy the master key to the server
+          scp -o StrictHostKeyChecking=no -i myKey.pem master.key ubuntu@${{ secrets.ELASTIC_IP }}:/tmp/master.key
+          
+          # Now run the deployment script
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} << 'EOF'
             set -e
             
-            # Update system packages and upgrade system packages
-            sudo apt update && sudo apt upgrade -y
-
-
+            # Update system packages and install required dependencies
+            sudo apt-get update -y
+            sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev git curl
+          
+            # Create app directory if it doesn't exist
+            sudo mkdir -p /home/ubuntu/app
+            cd /home/ubuntu/app
+          
+            # Ensure proper ownership
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/app
+          
             # Clone repository if it doesn't exist, otherwise pull latest changes
             if [ ! -d ".git" ]; then
-            git clone https://github.com/RyanByrne03/CadCAV2 DiaryApp
+              git clone https://github.com/RyanByrne03/CadCAV2 .
             else
-            git pull origin main
+              git pull origin main
             fi
-
-            # Navigate to the application directory
-            cd /home/ubuntu/DiaryApp
-
-            # Ensure proper ownership of the directory and its contents
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/DiaryApp
-
-            # Clean up existing bundle directory to fix permissions
-            sudo rm -rf vendor/bundle
-
-            # Ensure Bundler is installed
-            gem install bundler -v 2.6.1
-
-            # Install application dependencies
-            bundle _2.6.1_ install 
-
-            # Run database migrations
-            bundle exec rails db:migrate
-
+          
+            # Install Bundler
+            sudo gem install bundler -v 2.6.1
+          
+            # Install gems
+            bundle _2.6.1_ install
+          
+            # Set up Rails environment
+            export RAILS_ENV=production
+          
+            # Set up master key
+            mkdir -p config
+            mv /tmp/master.key config/master.key
+            chmod 600 config/master.key
+          
+            # Clean up any existing credentials
+            rm -f config/credentials.yml.enc
+            rm -f config/credentials/production.yml.enc
+            
+            # Generate new credentials
+            EDITOR="/bin/true" bundle exec rails credentials:edit
+          
+            # Database setup
+            bundle exec rails db:migrate RAILS_ENV=production
+          
+            # Precompile assets
+            bundle exec rails assets:precompile
+          
             # Kill any existing Rails server
             pkill -f "rails server" || true
+          
             # Start the Rails server
             bundle exec rails server -d -b 0.0.0.0 -p 3000
-
+          
             echo "Deployment Complete!"
           EOF
 
