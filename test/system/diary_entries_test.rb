@@ -48,7 +48,7 @@ class DiaryEntriesTest < ApplicationSystemTestCase
     diary_entry = DiaryEntry.create!(title: "To Be Deleted", content: "Will be removed", date: Date.today)
 
     # Visit the index page and show the entry you want to delete
-    visit diary_entries_url(diary_entry)
+    visit diary_entry_url(diary_entry)
       click_on "Destroy this diary entry"
 
     # Verify the deletion
