@@ -29,9 +29,9 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} << 'EOF'
             set -e
             
-            # Update system packages and install required dependencies
-            sudo apt-get update -y
-            sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev
+            # Update system packages and upgrade system packages
+            sudo apt update && sudo apt upgrade -y
+
 
             # Clone repository if it doesn't exist, otherwise pull latest changes
             if [ ! -d ".git" ]; then
@@ -44,7 +44,8 @@ jobs:
             cd /home/ubuntu/CadCAV2
 
             # Ensure proper ownership of the directory and its contents
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/CadCAV2
+            sudo chown -R ubuntu:ubuntu /var/lib/gems/
+            sudo chmod -R u+rwX /var/lib/gems/
 
             # Clean up existing bundle directory to fix permissions
             sudo rm -rf vendor/bundle
@@ -53,13 +54,10 @@ jobs:
             git pull origin main
 
             # Ensure Bundler is installed
-            if ! command -v bundle &> /dev/null; then
-              echo "Installing Bundler..."
-              sudo gem install bundler --no-document
-            fi
+            gem install bundler -v 2.6.1
 
             # Install application dependencies
-            bundle install 
+            bundle _2.6.1_ install 
 
             # Run database migrations
             bundle exec rails db:migrate
