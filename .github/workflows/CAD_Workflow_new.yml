@@ -58,6 +58,9 @@ jobs:
           
             # Install Bundler
             sudo gem install bundler -v 2.5.23
+
+            # Install libyaml to prevent issues
+            sudo apt install libyaml-dev -y
           
             # Install gems
             bundle config set --local deployment 'true'
