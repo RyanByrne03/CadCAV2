@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up SSH Key
         env:
@@ -41,17 +41,13 @@ jobs:
             fi
 
             # Navigate to the application directory
-            cd /home/ubuntu/CadCAV2
+            cd /home/ubuntu/DiaryApp
 
             # Ensure proper ownership of the directory and its contents
-            sudo chown -R ubuntu:ubuntu /var/lib/gems/
-            sudo chmod -R u+rwX /var/lib/gems/
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/DiaryApp
 
             # Clean up existing bundle directory to fix permissions
             sudo rm -rf vendor/bundle
-
-            # Pull the latest changes from the repository
-            git pull origin main
 
             # Ensure Bundler is installed
             gem install bundler -v 2.6.1
@@ -61,6 +57,11 @@ jobs:
 
             # Run database migrations
             bundle exec rails db:migrate
+
+            # Kill any existing Rails server
+            pkill -f "rails server" || true
+            # Start the Rails server
+            bundle exec rails server -d -b 0.0.0.0 -p 3000
 
             echo "Deployment Complete!"
           EOF
