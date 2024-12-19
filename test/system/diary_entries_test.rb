@@ -1,45 +1,71 @@
 require "application_system_test_case"
 
 class DiaryEntriesTest < ApplicationSystemTestCase
-  setup do
-    @diary_entry = diary_entries(:one)
-  end
-
   test "visiting the index" do
     visit diary_entries_url
-    assert_selector "h1", text: "Diary entries"
+
+    # Ensure the navigation bar exists
+    assert_selector "nav.navbar", text: "Diary App"
+
+    # Check for the main heading
+    assert_selector "h1", text: "Welcome to the app!"
+
+    # Verify the presence of diary entry cards
+    assert_selector ".custom-card", count: DiaryEntry.count
   end
 
   test "should create diary entry" do
     visit diary_entries_url
-    click_on "New diary entry"
 
-    fill_in "Content", with: @diary_entry.content
-    fill_in "Date", with: @diary_entry.date
-    fill_in "Title", with: @diary_entry.title
-    click_on "Create Diary entry"
+    # Navigate to the new diary entry page
+    click_on "New Diary Entry"
 
+    # Fill in the form
+    fill_in "Title", with: "My First Diary Entry"
+    fill_in "Content", with: "This is the content of my first diary entry."
+    fill_in "Date", with: Date.today
+
+    # Submit the form
+    click_on "Save Diary Entry"
+
+    # Verify success message and redirection
     assert_text "Diary entry was successfully created"
-    click_on "Back"
+    assert_selector ".custom-card-header", text: "My First Diary Entry"
   end
 
-  test "should update Diary entry" do
-    visit diary_entry_url(@diary_entry)
-    click_on "Edit this diary entry", match: :first
+  test "should update diary entry" do
+    diary_entry = diary_entries(:one) # Assuming a fixture or factory is available
 
-    fill_in "Content", with: @diary_entry.content
-    fill_in "Date", with: @diary_entry.date
-    fill_in "Title", with: @diary_entry.title
-    click_on "Update Diary entry"
+    visit diary_entry_url(diary_entry)
 
+    # Navigate to the edit page
+    click_on "Edit this diary entry"
+
+    # Update the form fields
+    fill_in "Title", with: "Updated Diary Entry Title"
+    click_on "Save Diary Entry"
+
+    # Verify the changes
     assert_text "Diary entry was successfully updated"
-    click_on "Back"
+    assert_selector ".custom-card-header", text: "Updated Diary Entry Title"
   end
 
-  test "should destroy Diary entry" do
-    visit diary_entry_url(@diary_entry)
-    click_on "Destroy this diary entry", match: :first
+  test "should destroy diary entry" do
+    diary_entry = diary_entries(:one)
 
+    visit diary_entries_url
+
+    # Find and click the destroy button for the specific diary entry
+    within(".custom-card", text: diary_entry.title) do
+      click_on "Destroy this diary entry"
+    end
+
+    # Confirm deletion
+    page.accept_confirm
+
+    # Verify success message and absence of the card
     assert_text "Diary entry was successfully destroyed"
+    assert_no_selector ".custom-card-header", text: diary_entry.title
   end
 end
+

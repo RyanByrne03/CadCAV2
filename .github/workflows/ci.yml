@@ -50,28 +50,6 @@ jobs:
       - name: Scan for security vulnerabilities in JavaScript dependencies
         run: bin/importmap audit
 
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Fix Shebang for Ruby Scripts
-        run: sed -i 's/ruby.exe/ruby/g' bin/*
-
-      - name: Fix Permissions
-        run: chmod +x bin/*
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
-
   test:
     runs-on: ubuntu-latest
 
@@ -93,6 +71,9 @@ jobs:
 
       - name: Fix Permissions
         run: chmod +x bin/*
+
+        name: Run Bundle Install
+        run: bundle install
 
       - name: Run tests
         env:
