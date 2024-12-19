@@ -35,7 +35,7 @@ jobs:
 
             # Clone repository if it doesn't exist, otherwise pull latest changes
             if [ ! -d ".git" ]; then
-            git clone https://github.com/RyanByrne03/CadCAV2 .
+            git clone https://github.com/RyanByrne03/CadCAV2 CadCAV2
             else
             git pull origin main
             fi
