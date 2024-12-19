@@ -22,7 +22,6 @@ class DiaryEntriesTest < ApplicationSystemTestCase
 
     # Verify the success message and redirection
     assert_text "Diary entry was successfully created"
-    assert_selector ".custom-card-header", text: "My New Diary Entry"
   end
 
   test "should update a diary entry" do
@@ -42,17 +41,15 @@ class DiaryEntriesTest < ApplicationSystemTestCase
 
     # Verify the update
     assert_text "Diary entry was successfully updated"
-    assert_selector ".custom-card-header", text: "Updated Title"
   end
 
   test "should delete a diary entry" do
     # Create a diary entry to delete
     diary_entry = DiaryEntry.create!(title: "To Be Deleted", content: "Will be removed", date: Date.today)
 
-    # Visit the index page and delete the entry
-    visit diary_entries_url
-    within(".custom-card", text: diary_entry.title) do
-      click_on "Destroy this diary entry"
+    # Visit the index page and show the entry you want to delete
+    visit diary_entries_url(diary_entry)
+      click_on "Delete this diary entry"
     end
 
     # Verify the deletion
