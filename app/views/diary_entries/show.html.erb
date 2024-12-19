@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @diary_entry %>
+
+<div>
+  <%= link_to "Edit this diary entry", edit_diary_entry_path(@diary_entry), class: "btn btn-primary" %>
+  <%= link_to "Back to diary entries", diary_entries_path, class: "btn btn-secondary" %>
+  <%= button_to "Destroy this diary entry", @diary_entry, method: :delete, class: "btn btn-danger", data: { confirm: "Are you sure you want to destroy this diary entry?" } %>
+</div>
+

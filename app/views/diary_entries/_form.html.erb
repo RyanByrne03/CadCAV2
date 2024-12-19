@@ -1,0 +1,32 @@
+<%= form_with(model: diary_entry, class: "needs-validation") do |form| %>
+  <% if diary_entry.errors.any? %>
+    <div class="alert alert-danger">
+      <h4 class="alert-heading"><%= pluralize(diary_entry.errors.count, "error") %> prohibited this diary entry from being saved:</h4>
+      <ul>
+        <% diary_entry.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :title, class: "form-label" %>
+    <%= form.text_field :title, class: "form-control", placeholder: "Enter the title" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :content, class: "form-label" %>
+    <%= form.text_area :content, class: "form-control", placeholder: "Write your content here", rows: 5 %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :date, class: "form-label" %>
+    <%= form.date_field :date, class: "form-control" %>
+  </div>
+
+  <div class="mt-3">
+    <%= form.submit "Save Diary Entry", class: "btn btn-primary" %>
+  </div>
+<% end %>
+

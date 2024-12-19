@@ -1,0 +1,11 @@
+<% content_for :title, "New diary entry" %>
+
+<h1>New diary entry</h1>
+
+<%= render "form", diary_entry: @diary_entry %>
+
+<br>
+
+<div>
+  <%= link_to "Back to diary entries", diary_entries_path, class: "btn btn-secondary" %>
+</div>
