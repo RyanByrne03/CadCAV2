@@ -50,7 +50,6 @@ class DiaryEntriesTest < ApplicationSystemTestCase
     # Visit the index page and show the entry you want to delete
     visit diary_entries_url(diary_entry)
       click_on "Delete this diary entry"
-    end
 
     # Verify the deletion
     assert_text "Diary entry was successfully destroyed"
