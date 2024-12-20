@@ -49,12 +49,6 @@ jobs:
           
             # Pull the latest changes from GitHub
             git pull origin main
-            
-            # Make sure bundler is installed
-            if ! command -v bundle &> /dev/null; then
-              echo "Installing Bundler..."
-              sudo gem install bundler -v 2.6.1
-            fi
 
             # Install gems
             bundle install
