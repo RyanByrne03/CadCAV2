@@ -58,6 +58,11 @@ jobs:
           
             # Install Bundler
             sudo gem install bundler -v 2.6.1
+
+            # Manual installation of rake, importmap-rails and railties to try and fix things
+            gem install rake -v 13.2.1
+            gem install importmap-rails -v 2.0.3
+            gem install railties -v 7.2.2.1
           
             # Install gems
             bundle _2.6.1_ install
