@@ -22,7 +22,7 @@ jobs:
 
       - name: Test SSH Connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.EC2_ELASTIC_IP }} "echo Connected Successfully!"
+          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} "echo Connected Successfully!"
 
       - name: Deploy to EC2
         env:
