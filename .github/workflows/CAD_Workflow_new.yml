@@ -38,40 +38,35 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} << 'EOF'
             set -e
             
-            # Update system packages and install required dependencies
+            # In order to get the app to deploy, I installed ruby and rails manually in the instance
             sudo apt-get update -y
 
-            # Create app directory if it doesn't exist
-            sudo mkdir -p /home/ubuntu/app
-            cd /home/ubuntu/app
+            # Navigate to the app
+            cd /home/ubuntu/CadCAV2
           
             # Ensure proper ownership
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/app
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/CadCAV2
           
-            # Clone repository if it doesn't exist, otherwise pull latest changes
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/RyanByrne03/CadCAV2 . 
-            else
-              git pull origin main
+            # Pull the latest changes from GitHub
+            git pull origin main
+            
+            # Make sure bundler is installed
+            if ! command -v bundle &> /dev/null; then
+              echo "Installing Bundler..."
+              sudo gem install bundler -v 2.6.1
             fi
-          
-            # Install Bundler
-            sudo gem install bundler -v 2.6.1
 
             # Install gems
-            bundle _2.6.1_ install
+            bundle install
           
             # Set up Rails environment
             export RAILS_ENV=production
           
             # Set up master key
-            mkdir -p config
-            mv /tmp/master.key config/master.key
             chmod 600 config/master.key
           
             # Clean up any existing credentials
             rm -f config/credentials.yml.enc
-            rm -f config/credentials/production.yml.enc
             
             # Generate new credentials
             EDITOR="/bin/true" bundle exec rails credentials:edit
