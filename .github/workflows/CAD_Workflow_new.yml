@@ -40,10 +40,6 @@ jobs:
             
             # Update system packages and install required dependencies
             sudo apt-get update -y
-            sudo apt-get install -y build-essential libssl-dev zlib1g-dev git curl
-
-            # Install Rails 7.2.2.1
-            gem install rails -v 7.2.2.1
 
             # Create app directory if it doesn't exist
             sudo mkdir -p /home/ubuntu/app
