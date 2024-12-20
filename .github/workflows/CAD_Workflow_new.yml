@@ -28,20 +28,28 @@ jobs:
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_M_KEY }}
         run: |
-          # First, write the master key to a local file
+          # Write the master key to a local file
           echo -n "$RAILS_MASTER_KEY" > master.key
           
           # Copy the master key to the server
           scp -o StrictHostKeyChecking=no -i myKey.pem master.key ubuntu@${{ secrets.ELASTIC_IP }}:/tmp/master.key
           
-          # Now run the deployment script
+          # Run the deployment script
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@${{ secrets.ELASTIC_IP }} << 'EOF'
             set -e
             
             # Update system packages and install required dependencies
             sudo apt-get update -y
-            sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev git curl
-          
+            sudo apt-get install -y curl gpg
+            \curl -sSL https://get.rvm.io | bash -s stable
+            source ~/.bashrc
+            rvm install 3.3.5
+            rvm use 3.3.5 --default
+            sudo apt-get install -y build-essential libssl-dev zlib1g-dev git curl
+
+            # Install Rails 7.2.2.1
+            gem install rails -v 7.2.2.1
+
             # Create app directory if it doesn't exist
             sudo mkdir -p /home/ubuntu/app
             cd /home/ubuntu/app
@@ -51,7 +59,7 @@ jobs:
           
             # Clone repository if it doesn't exist, otherwise pull latest changes
             if [ ! -d ".git" ]; then
-              git clone https://github.com/RyanByrne03/CadCAV2 .
+              git clone https://github.com/RyanByrne03/CadCAV2 . 
             else
               git pull origin main
             fi
@@ -59,23 +67,6 @@ jobs:
             # Install Bundler
             sudo gem install bundler -v 2.6.1
 
-            # Manual installation of things that failed to auto install before
-            sudo gem install rake -v 13.2.1
-            sudo gem install importmap-rails -v 2.0.3
-            sudo gem install railties -v 7.2.2.1
-            sudo gem install base64
-            sudo gem install actioncable
-            sudo gem install actionpack
-            sudo gem install actionview
-            sudo gem install rails-dom-testing
-            sudo gem install activesupport
-            sudo gem install bigdecimal
-            sudo gem install rails
-            sudo gem install drb
-            sudo gem install logger
-
-
-          
             # Install gems
             bundle _2.6.1_ install
           
