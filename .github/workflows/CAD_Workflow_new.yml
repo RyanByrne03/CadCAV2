@@ -64,6 +64,12 @@ jobs:
             sudo gem install importmap-rails -v 2.0.3
             sudo gem install railties -v 7.2.2.1
             sudo gem install base64
+            sudo gem install actioncable
+            sudo gem install actionpack
+            sudo gem install actionview
+            sudo gem install rails-dom-testing
+            sudo gem install activesupport
+            sudo gem install bigdecimal
 
           
             # Install gems
