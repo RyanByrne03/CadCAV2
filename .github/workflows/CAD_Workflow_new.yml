@@ -70,6 +70,9 @@ jobs:
             sudo gem install rails-dom-testing
             sudo gem install activesupport
             sudo gem install bigdecimal
+            sudo gem install rails
+            sudo gem install drb
+
 
           
             # Install gems
