@@ -72,6 +72,7 @@ jobs:
             sudo gem install bigdecimal
             sudo gem install rails
             sudo gem install drb
+            sudo gem install logger
 
 
           
