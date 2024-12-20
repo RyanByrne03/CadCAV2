@@ -40,11 +40,6 @@ jobs:
             
             # Update system packages and install required dependencies
             sudo apt-get update -y
-            sudo apt-get install -y curl gpg
-            \curl -sSL https://get.rvm.io | bash -s stable
-            source ~/.bashrc
-            rvm install 3.3.5
-            rvm use 3.3.5 --default
             sudo apt-get install -y build-essential libssl-dev zlib1g-dev git curl
 
             # Install Rails 7.2.2.1
